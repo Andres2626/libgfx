@@ -9,7 +9,7 @@ CC      := gcc
 CFLAGS  := -FPIC -DGLAD_GLAPI_EXPORT_BUILD -I$(INCDIR)
 
 BIN     := $(OUTDIR)/libgfx.dll
-LIB		:= $(OUTDIR)/libgfx.a.dll
+LIB		:= $(OUTDIR)/libgfxdll.a
 
 PHONY += all clean distclean
 all: $(BIN)
@@ -22,7 +22,7 @@ clean:
 	rm -rf $(OUTDIR)/*
 
 $(OUTDIR)/libgfx.dll: $(OUTDIR)/glad.o
-	$(CC) -shared -o $@ $^ -Wl,--out-implib,$(OUTDIR)/libgfx.dll.a
+	$(CC) -shared -o $@ $^ -Wl,--out-implib,$(LIB)
 
 $(OUTDIR)/%.o: src/%.c
 	@mkdir -p $(@D)
