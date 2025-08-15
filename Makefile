@@ -1,15 +1,18 @@
 SUBDIRS +=
-export MK = $(MAKE) -C
 
 OUTDIR  := build
 INCDIR  := include
 SRCDIR  := src
 
-CC      := gcc
-CFLAGS  := -FPIC -DGLAD_GLAPI_EXPORT_BUILD -I$(INCDIR)
+CFLAGS  := $(OUT_CFLAGS) -DGLAD_GLAPI_EXPORT_BUILD -I$(INCDIR)
 
-BIN     := $(OUTDIR)/libgfx.dll
-LIB		:= $(OUTDIR)/libgfxdll.a
+BIN     := $(OUTDIR)/libgfx.$(DYNEXT)
+
+ifeq ($(TOOLCHAIN), mingw)
+LIB		:= $(OUTDIR)/libgfxdll.$(LIBEXT)
+else ifeq ($(TOOLCHAIN), cygwin)
+LIB    :=
+endif
 
 PHONY += all clean distclean
 all: $(BIN)
@@ -21,8 +24,8 @@ clean:
 	rm -rf $(BIN)
 	rm -rf $(OUTDIR)/*
 
-$(OUTDIR)/libgfx.dll: $(OUTDIR)/glad.o
-	$(CC) -shared -o $@ $^ -Wl,--out-implib,$(LIB)
+$(BIN): $(OUTDIR)/glad.o
+	$(CC) -o $@ $^ $(EXEC_CFLAGS)$(LIB)
 
 $(OUTDIR)/%.o: src/%.c
 	@mkdir -p $(@D)
