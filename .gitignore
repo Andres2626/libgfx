@@ -2,3 +2,5 @@
 build/
 *.dll
 *.so
+*.a
+*.obj
